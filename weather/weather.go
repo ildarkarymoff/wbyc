@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis"
-	"log"
+	"os"
 	"time"
 )
 
@@ -14,7 +14,7 @@ var redisClient *redis.Client
 
 func Init() error {
 	redisClient = redis.NewClient(&redis.Options{
-		Addr: "db:6379",
+		Addr: os.Getenv("REDIS_HOST") + ":6379",
 	})
 
 	_, err := redisClient.Ping().Result()
@@ -30,7 +30,7 @@ func GetCurrentWeather(city string) (*apixu.Weather, error) {
 
 	coordinates, err := geocoder.GetCityCoordinates(city)
 	if err != nil {
-		log.Fatalln(err)
+		return &apixu.Weather{}, err
 	}
 
 	exists, err := redisClient.Exists(makeKeyFromCoords(coordinates)).Result()

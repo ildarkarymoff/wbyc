@@ -19,6 +19,7 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/api/weather/current/{city}", getCurrentWeather)
+	r.NotFoundHandler = http.HandlerFunc(notFound)
 	log.Println(http.ListenAndServe(":8080", r))
 }
 
@@ -30,11 +31,17 @@ func getCurrentWeather(w http.ResponseWriter, r *http.Request) {
 
 	weatherInfo, err := weather.GetCurrentWeather(city)
 	if err != nil {
-		log.Fatalln(err)
+		log.Printf("Failed to get weather: %v", err)
+		http.ServeFile(w, r, "public/404.txt")
+		return
 	}
 
 	err = json.NewEncoder(w).Encode(&weatherInfo)
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func notFound(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "public/404.txt")
 }
