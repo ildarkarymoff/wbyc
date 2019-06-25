@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/joho/godotenv"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -17,7 +16,7 @@ type Weather struct {
 	FeelsLike   float64 `json:"feels_like"`
 }
 
-func GetCurrentWeather(coordinates geocoder.Coordinates) (*Weather, error) {
+func GetCurrentWeather(coordinates *geocoder.Coordinates) (*Weather, error) {
 	current, err := fetchCurrentWeather(coordinates)
 	if err != nil {
 		return &Weather{}, err
@@ -29,12 +28,7 @@ func GetCurrentWeather(coordinates geocoder.Coordinates) (*Weather, error) {
 	}, nil
 }
 
-func fetchCurrentWeather(coordinates geocoder.Coordinates) (*Current, error) {
-	err := godotenv.Load()
-	if err != nil {
-		return &Current{}, errors.New("Failed to load environment variables. Make sure .env file exists")
-	}
-
+func fetchCurrentWeather(coordinates *geocoder.Coordinates) (*Current, error) {
 	apiKey := os.Getenv("APIXU_API_KEY")
 	urlFormat := "http://api.apixu.com/v1/current.json?key=%s&q=%f,%f"
 

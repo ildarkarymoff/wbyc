@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/joho/godotenv"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -27,11 +26,6 @@ func GetCityCoordinates(city string) (*Coordinates, error) {
 }
 
 func fetchCity(city string) (*GeoObject, error) {
-	err := godotenv.Load()
-	if err != nil {
-		return &GeoObject{}, errors.New("Failed to load environment variables. Make sure .env file exists")
-	}
-
 	apiKey := os.Getenv("YANDEX_API_KEY")
 	urlFormat := "https://geocode-maps.yandex.ru/1.x/?apikey=%s&format=json&geocode=%s"
 	url := fmt.Sprintf(urlFormat, apiKey, city)
