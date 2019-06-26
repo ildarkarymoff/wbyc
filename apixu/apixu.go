@@ -23,8 +23,8 @@ func GetCurrentWeather(coordinates *geocoder.Coordinates) (*Weather, error) {
 	}
 
 	return &Weather{
-		Temperature: fmt.Sprintf("%.2f", current.TempC),
-		FeelsLike:   fmt.Sprintf("%.2f", current.FeelslikeC),
+		Temperature: prettifyTemperature(current.TempC),
+		FeelsLike:   prettifyTemperature(current.FeelslikeC),
 	}, nil
 }
 
@@ -54,4 +54,18 @@ func fetchCurrentWeather(coordinates *geocoder.Coordinates) (*Current, error) {
 	}
 
 	return &response.Current, nil
+}
+
+func prettifyTemperature(t float64) string {
+	tStr := fmt.Sprintf("%.1f", t)
+
+	if tStr[len(tStr)-2:] == ".0" {
+		tStr = tStr[:2]
+	}
+
+	if tStr[0] != '-' {
+		tStr = "+" + tStr
+	}
+
+	return tStr
 }
