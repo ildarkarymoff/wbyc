@@ -3,8 +3,7 @@ FROM golang:latest
 COPY . /app
 
 # Install deps
-RUN go get -t github.com/gorilla/mux
-RUN go get -t github.com/go-redis/redis
-RUN go get -t github.com/joho/godotenv
+RUN go get github.com/gorilla/mux
+RUN go get github.com/go-redis/redis
 
 EXPOSE 8080

@@ -3,7 +3,23 @@ Weather by City API
 
 ## Usage
 
-`http://<host>:8080/api/weather/current/{city}`
+`GET http://<host>:8080/api/weather/current/{city}`
+
+or
+
+`GET http://<host>:8080/api/weather/current?city={city}`
+
+or
+
+`POST http://<host>:8080/api/weather/current`
+
+with JSON body:
+
+```json
+{
+  "city": "<city>"
+}
+```
 
 `city` parameter can be passed in cyrillic.
 
