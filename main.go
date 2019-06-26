@@ -19,6 +19,7 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/api/weather/current/{city}", getCurrentWeather)
+	r.HandleFunc("/api/weather/current", getCurrentWeather)
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 	log.Println(http.ListenAndServe(":8080", r))
 }
@@ -27,7 +28,18 @@ func getCurrentWeather(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	params := mux.Vars(r)
-	city := params["city"]
+	var city string
+	if _, exists := params["city"]; !exists {
+		cityKeys := r.URL.Query()["city"]
+		if len(cityKeys) < 1 {
+			http.ServeFile(w, r, "public/404.txt")
+			return
+		}
+
+		city = cityKeys[0]
+	} else {
+		city = params["city"]
+	}
 
 	weatherInfo, err := weather.GetCurrentWeather(city)
 	if err != nil {
