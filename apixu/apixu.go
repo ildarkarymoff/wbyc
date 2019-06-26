@@ -63,7 +63,7 @@ func prettifyTemperature(t float64) string {
 		tStr = tStr[:2]
 	}
 
-	if tStr[0] != '-' {
+	if t > 0 {
 		tStr = "+" + tStr
 	}
 
