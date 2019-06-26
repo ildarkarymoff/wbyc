@@ -12,8 +12,8 @@ import (
 )
 
 type Weather struct {
-	Temperature float64 `json:"temperature"`
-	FeelsLike   float64 `json:"feels_like"`
+	Temperature string `json:"temperature"`
+	FeelsLike   string `json:"feels_like"`
 }
 
 func GetCurrentWeather(coordinates *geocoder.Coordinates) (*Weather, error) {
@@ -23,8 +23,8 @@ func GetCurrentWeather(coordinates *geocoder.Coordinates) (*Weather, error) {
 	}
 
 	return &Weather{
-		Temperature: current.TempC,
-		FeelsLike:   current.FeelslikeC,
+		Temperature: fmt.Sprintf("%.2f", current.TempC),
+		FeelsLike:   fmt.Sprintf("%.2f", current.FeelslikeC),
 	}, nil
 }
 
