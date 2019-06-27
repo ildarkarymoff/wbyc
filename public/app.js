@@ -1,10 +1,3 @@
-class Weather {
-    constructor(temperature = 0, feelsLike = 0) {
-        this.temperature = temperature;
-        this.feelsLike = feelsLike;
-    }
-}
-
 const State = {
     IDLE: 0,
     FETCHING: 1,
@@ -16,7 +9,7 @@ const WeatherApp = {
     init: () => {
         WeatherApp.state = State.IDLE;
 
-        WeatherApp.weather = new Weather();
+        WeatherApp.weather = null;
         WeatherApp.API_URI = '/api/weather/current/';
         WeatherApp.UI = {
             inputField: document.querySelector('.cityInput'),
@@ -67,9 +60,10 @@ const WeatherApp = {
                     console.log(json);
                     if (json) {
                         if (json.temperature && json.feels_like)
-                            WeatherApp.weather = new Weather(
-                                json.temperature,
-                                json.feels_like);
+                            WeatherApp.weather = {
+                                temperature: json.temperature,
+                                feelsLike: json.feels_like
+                            };
 
                         WeatherApp.state = State.FETCH_COMPLETE;
                         WeatherApp.updateView();
