@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func main() {
@@ -118,15 +119,7 @@ func getCurrentWeather(w http.ResponseWriter, r *http.Request, city string) {
 }
 
 func prettifyTemperature(t float64) string {
-	tStr := fmt.Sprintf("%.1f", t)
-
-	if tStr[len(tStr)-2:] == ".0" {
-		tStr = tStr[:1]
-	}
-
-	if t == 0.0 {
-		tStr = "0"
-	}
+	tStr := strconv.FormatFloat(t, 'f', -1, 64)
 
 	if t > 0 {
 		tStr = "+" + tStr
