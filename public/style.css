@@ -3,7 +3,8 @@
 body {
     font-family: "Roboto", sans-serif;
     text-align: center;
-    background-color: #e0e0e0
+    background-color: #e0e0e0;
+    padding: 50px;
 }
 
 h1, h2 {

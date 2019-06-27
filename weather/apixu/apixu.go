@@ -10,23 +10,8 @@ import (
 	"os"
 )
 
-type TempAndFeelsLikeWeather struct {
-	Temperature string `json:"temperature"`
-	FeelsLike   string `json:"feels_like"`
-}
-
-//func GetCurrentWeather(coordinates *geocoder.Coordinates) (*TempAndFeelsLikeWeather, error) {
-//	response, err := GetCurrentWeather(coordinates)
-//	if err != nil {
-//		return &TempAndFeelsLikeWeather{}, err
-//	}
-//
-//	return &TempAndFeelsLikeWeather{
-//		Temperature: prettifyTemperature(response.Current.TempC),
-//		FeelsLike:   prettifyTemperature(response.Current.FeelsLikeC),
-//	}, nil
-//}
-
+// GetCurrentWeather fetches current weather information from Apixu Weather
+// API with provided latitude and longitude.
 func GetCurrentWeather(coordinates *geocoder.Coordinates) (*Weather, error) {
 	apiKey := os.Getenv("APIXU_API_KEY")
 	urlFormat := "http://api.apixu.com/v1/current.json?key=%s&q=%f,%f"

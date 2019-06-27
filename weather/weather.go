@@ -13,6 +13,7 @@ import (
 
 var redisClient *redis.Client
 
+// Init creates new Redis client (required for storing weather cache)
 func Init() error {
 	redisClient = redis.NewClient(&redis.Options{
 		Addr: os.Getenv("REDIS_HOST") + ":6379",
@@ -26,6 +27,10 @@ func Init() error {
 	return nil
 }
 
+// GetCurrent fetches city coordinates by it's name,
+// then fetches current weather data from Redis (if
+// corresponding coordinates-key exists) or directly
+// from Apixu Weather.
 func GetCurrent(city string) (*apixu.Weather, error) {
 	var weather *apixu.Weather
 
@@ -73,7 +78,7 @@ func setWeatherRow(coordinates *geocoder.Coordinates, weather *apixu.Weather) er
 	err := redisClient.Set(
 		makeKeyFromCoords(coordinates),
 		string(serialized),
-		60*60*time.Second,
+		60*60*time.Second, // Weather "cache" lives for 1 hour
 	)
 
 	return err.Err()

@@ -6,8 +6,6 @@ import (
 	"strings"
 )
 
-// Automatically generated from typical JSON response from
-// Yandex Geocoder Maps API
 type HttpApiResponse struct {
 	Response Response `json:"response"`
 }

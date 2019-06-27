@@ -10,41 +10,40 @@ import (
 	"net/http"
 )
 
-type CurrentWeatherRequestBody struct {
-	City string `json:"city"`
-}
-
 func main() {
 	fmt.Println()
 
-	err := weather.Init()
+	err := weather.Init() // Initializing weather module to work with Redis
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	r := mux.NewRouter()
-	r.HandleFunc("/api/weather/current/{city}", getCurrentWeatherHandler)
-	r.HandleFunc("/api/weather/current", getCurrentWeatherHandler)
-	r.NotFoundHandler = http.HandlerFunc(notFound)
+	r.HandleFunc("/api/weather/current/{city}", handleGetCurrentWeather)
+	r.HandleFunc("/api/weather/current", handleGetCurrentWeather)
+	r.NotFoundHandler = http.HandlerFunc(handleNotFound)
 
+	// Handle static files:
 	fs := http.FileServer(http.Dir("./public"))
-	r.PathPrefix("/").Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/" {
-			http.ServeFile(w, r, "public/index.html")
-			return
-		}
+	r.PathPrefix("/").Handler(
 
-		fs.ServeHTTP(w, r)
-	})).Methods("GET")
+		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.URL.Path == "/" {
+				http.ServeFile(w, r, "public/index.html")
+				return
+			}
 
-	log.Println(http.ListenAndServe(":8080", r))
+			fs.ServeHTTP(w, r)
+
+		})).Methods("GET")
+
+	err = http.ListenAndServe(":8080", r)
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
 
-func showIndex(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "public/index.html")
-}
-
-func getCurrentWeatherHandler(w http.ResponseWriter, r *http.Request) {
+func handleGetCurrentWeather(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var city string
 
@@ -55,6 +54,7 @@ func getCurrentWeatherHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Parsing request parameters from query, URI or request body:
 	params, err := resolveParameters(r, &body, "city", "icon")
 	if err != nil {
 		log.Println(err)
@@ -65,7 +65,6 @@ func getCurrentWeatherHandler(w http.ResponseWriter, r *http.Request) {
 	city = params["city"]
 
 	log.Printf("%s (%s), %s", r.Method, r.Header.Get("Content-Type"), city)
-
 	getCurrentWeather(w, r, city)
 }
 
@@ -122,7 +121,7 @@ func prettifyTemperature(t float64) string {
 	tStr := fmt.Sprintf("%.1f", t)
 
 	if tStr[len(tStr)-2:] == ".0" {
-		tStr = tStr[:2]
+		tStr = tStr[:1]
 	}
 
 	if t == 0.0 {
@@ -136,6 +135,6 @@ func prettifyTemperature(t float64) string {
 	return tStr
 }
 
-func notFound(w http.ResponseWriter, r *http.Request) {
+func handleNotFound(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "public/404.txt")
 }

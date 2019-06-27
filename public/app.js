@@ -35,7 +35,7 @@ const WeatherApp = {
                 WeatherApp.UI.output.innerHTML = '<i>Please wait...</i>';
                 break;
             case State.FETCH_COMPLETE:
-                WeatherApp.UI.output.innerHTML = `<p>Now in ${WeatherApp.city}:</p>`
+                WeatherApp.UI.output.innerHTML = `<p>Now in <strong>${WeatherApp.city}:</strong></p>`
                     + `<p class='large'>${WeatherApp.weather.temperature} &#8451;</p>`
                     + `<p class='feelsLike'>Feels like <strong>${WeatherApp.weather.feelsLike} &#8451;</strong></p>`;
                 break;
