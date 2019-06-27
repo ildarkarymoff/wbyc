@@ -2,7 +2,6 @@ package geocoder
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -14,7 +13,21 @@ type Coordinates struct {
 	Longitude float64
 }
 
-func GetCityCoordinates(city string) (*Coordinates, error) {
+type ErrCityNotFound struct {
+	city string
+}
+
+func NewErrCityNotFound(city string) *ErrCityNotFound {
+	return &ErrCityNotFound{
+		city: city,
+	}
+}
+
+func (e *ErrCityNotFound) Error() string {
+	return fmt.Sprintf("City '%s' not found", e.city)
+}
+
+func GetCoordinates(city string) (*Coordinates, error) {
 	geoObj, err := fetchCity(city)
 	if err != nil {
 		return &Coordinates{}, err
@@ -44,14 +57,14 @@ func fetchCity(city string) (*GeoObject, error) {
 	var response HttpApiResponse
 	err = json.Unmarshal(body, &response)
 	if err != nil {
-		return &GeoObject{}, errors.New("Failed to parse response as JSON data")
+		return &GeoObject{}, err
 	}
 
 	var featureMember []FeatureMember
 	featureMember = response.Response.GeoObjectCollection.FeatureMember
 
 	if len(featureMember) == 0 {
-		return &GeoObject{}, errors.New("City not found")
+		return &GeoObject{}, NewErrCityNotFound(city)
 	}
 
 	return &featureMember[0].GeoObject, nil

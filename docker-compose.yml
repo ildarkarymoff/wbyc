@@ -2,10 +2,9 @@ version: "3"
 services:
   web:
     build: .
-    working_dir: /go/src
+    working_dir: /app
     restart: on-failure
     stdin_open: true
-    command: go run /app/main.go
     env_file:
       - .env
     tty: true

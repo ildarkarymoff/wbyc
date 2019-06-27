@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700,900&display=swap&subset=cyrillic');
+
+body {
+    font-family: "Roboto", sans-serif;
+    text-align: center;
+    background-color: #e0e0e0
+}
+
+h1, h2 {
+    margin: 0;
+}
+
+.app {
+    text-align: left;
+    display: inline-block;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 4px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+}
+
+.app .inputBox input[type="text"],
+.app .inputBox button {
+    font-family: "Roboto", sans-serif;
+    font-size: medium;
+    outline-style: none;
+}
+
+.app .inputBox input[type="text"] {
+    margin-top: 20px;
+    width: 490px;
+    margin-right: 10px;
+    padding: 10px;
+    border: none;
+    border-bottom: 2px solid #e0e0e0;
+    transition: border-bottom-color 0.25s ease-in-out;
+}
+
+.app .inputBox input[type="text"]:focus {
+    border-bottom-color: cornflowerblue;
+}
+
+.app .inputBox button {
+    padding: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border: none;
+    background-color: cornflowerblue;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.1s ease-in-out;
+    border-radius: 4px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+    font-weight: bold;
+}
+
+.app .inputBox button:hover {
+    background-color: cadetblue;
+}
+
+.app .inputBox button:active {
+    background-color: cornflowerblue;
+}
+
+.app .output {
+    margin-top: 20px;
+}
+
+.app .output p {
+    margin: 0;
+}
+
+.app .output .large {
+    margin-top: 10px;
+    text-align: center;
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+.app .output .feelsLike {
+    text-align: center;
+    color: #cccccc;
+    font-size: x-large;
+}
+.app .output .error {
+    color: red;
+}

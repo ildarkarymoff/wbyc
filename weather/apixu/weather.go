@@ -1,6 +1,6 @@
 package apixu
 
-type HttpApiResponse struct {
+type Weather struct {
 	Location Location `json:"location"`
 	Current  Current  `json:"current"`
 }
@@ -39,8 +39,8 @@ type Current struct {
 	PrecipIn         float64   `json:"precip_in"`
 	Humidity         int       `json:"humidity"`
 	Cloud            int       `json:"cloud"`
-	FeelslikeC       float64   `json:"feelslike_c"`
-	FeelslikeF       float64   `json:"feelslike_f"`
+	FeelsLikeC       float64   `json:"feelslike_c"`
+	FeelsLikeF       float64   `json:"feelslike_f"`
 	VisKm            float64   `json:"vis_km"`
 	VisMiles         float64   `json:"vis_miles"`
 	Uv               float64   `json:"uv"`

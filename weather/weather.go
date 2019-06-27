@@ -1,11 +1,12 @@
 package weather
 
 import (
-	"../apixu"
-	"../geocoder"
+	"./apixu"
+	"./geocoder"
 	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis"
+	"log"
 	"os"
 	"time"
 )
@@ -25,27 +26,46 @@ func Init() error {
 	return nil
 }
 
-func GetCurrentWeather(city string) (*apixu.Weather, error) {
+func GetCurrent(city string) (*apixu.Weather, error) {
 	var weather *apixu.Weather
 
-	coordinates, err := geocoder.GetCityCoordinates(city)
+	coordinates, err := geocoder.GetCoordinates(city)
 	if err != nil {
 		return &apixu.Weather{}, err
 	}
 
-	exists, err := redisClient.Exists(makeKeyFromCoords(coordinates)).Result()
-	if err != nil {
-		return &apixu.Weather{}, err
-	}
-
-	if exists == 0 {
-		weather, err = apixu.GetCurrentWeather(coordinates)
-		_ = setWeatherRow(coordinates, weather)
-	} else {
+	if existsInRedis(coordinates) {
 		weather, err = getWeatherRow(coordinates)
+	} else {
+		weather, err = apixu.GetCurrentWeather(coordinates)
+		if err != nil {
+			return &apixu.Weather{}, err
+		}
+
+		err = setWeatherRow(coordinates, weather)
+	}
+
+	if err != nil {
+		return &apixu.Weather{}, err
 	}
 
 	return weather, err
+}
+
+func existsInRedis(coordinates *geocoder.Coordinates) bool {
+	exists, err := redisClient.Exists(makeKeyFromCoords(coordinates)).Result()
+	if err != nil {
+		log.Printf("[existsInRedis] %v", err)
+		return false
+	}
+
+	return !(exists == 0)
+}
+
+func makeKeyFromCoords(coordinates *geocoder.Coordinates) string {
+	return fmt.Sprintf("%f,%f",
+		coordinates.Latitude,
+		coordinates.Longitude)
 }
 
 func setWeatherRow(coordinates *geocoder.Coordinates, weather *apixu.Weather) error {
@@ -69,10 +89,4 @@ func getWeatherRow(coordinates *geocoder.Coordinates) (*apixu.Weather, error) {
 	err = json.Unmarshal([]byte(serialized), &weather)
 
 	return weather, err
-}
-
-func makeKeyFromCoords(coordinates *geocoder.Coordinates) string {
-	return fmt.Sprintf("%f,%f",
-		coordinates.Latitude,
-		coordinates.Longitude)
 }

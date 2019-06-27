@@ -1,7 +1,7 @@
 package main
 
 import (
-	. "./geocoder"
+	. "./weather/geocoder"
 	"log"
 	"testing"
 )
@@ -39,7 +39,7 @@ func TestParseCoordinates(t *testing.T) {
 	for _, test := range tests {
 		log.Println(test.city)
 
-		coords, err := GetCityCoordinates(test.city)
+		coords, err := GetCoordinates(test.city)
 		if err != nil {
 			t.Errorf("Got error: %v", err)
 		}
