@@ -35,9 +35,8 @@ APIXU_API_KEY=<YOUR_APIXU_API_KEY>
 REDIS_HOST=db
 ```
 
-Then run following commands:
+Then run:
 
 ```bash
-docker-compose build
 docker-compose up -d
 ``` 
