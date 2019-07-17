@@ -24,20 +24,6 @@ func main() {
 	r.HandleFunc("/api/weather/current", handleGetCurrentWeather)
 	r.NotFoundHandler = http.HandlerFunc(handleNotFound)
 
-	// Handle static files:
-	fs := http.FileServer(http.Dir("./public"))
-	r.PathPrefix("/").Handler(
-
-		http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.URL.Path == "/" {
-				http.ServeFile(w, r, "public/index.html")
-				return
-			}
-
-			fs.ServeHTTP(w, r)
-
-		})).Methods("GET")
-
 	err = http.ListenAndServe(":8080", r)
 	if err != nil {
 		log.Fatalln(err)
