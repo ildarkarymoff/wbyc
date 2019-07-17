@@ -14,5 +14,6 @@ services:
       - db
   db:
     image: redis
+    restart: on-failure
     ports:
       - "6379:6379"

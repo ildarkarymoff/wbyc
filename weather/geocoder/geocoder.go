@@ -9,6 +9,7 @@ import (
 )
 
 type Coordinates struct {
+	City      string
 	Latitude  float64
 	Longitude float64
 }
@@ -34,6 +35,7 @@ func GetCoordinates(city string) (*Coordinates, error) {
 	}
 
 	coords, err := geoObj.Point.toCoords()
+	coords.City = geoObj.Name
 
 	return &coords, nil
 }

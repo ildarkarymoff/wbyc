@@ -105,11 +105,13 @@ func getCurrentWeather(w http.ResponseWriter, r *http.Request, city string) {
 	}
 
 	filteredWeather := struct {
+		City        string `json:"city"`
 		Temperature string `json:"temperature"`
 		FeelsLike   string `json:"feels_like"`
 	}{
-		Temperature: prettifyTemperature(weatherInfo.Current.TempC),
-		FeelsLike:   prettifyTemperature(weatherInfo.Current.FeelsLikeC),
+		City:        weatherInfo.City,
+		Temperature: prettifyTemperature(weatherInfo.Weather.Current.TempC),
+		FeelsLike:   prettifyTemperature(weatherInfo.Weather.Current.FeelsLikeC),
 	}
 
 	err = json.NewEncoder(w).Encode(&filteredWeather)

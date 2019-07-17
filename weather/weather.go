@@ -11,6 +11,11 @@ import (
 	"time"
 )
 
+type WeatherInfo struct {
+	City    string
+	Weather apixu.Weather
+}
+
 var redisClient *redis.Client
 
 // Init creates new Redis client (required for storing weather cache)
@@ -31,12 +36,12 @@ func Init() error {
 // then fetches current weather data from Redis (if
 // corresponding coordinates-key exists) or directly
 // from Apixu Weather.
-func GetCurrent(city string) (*apixu.Weather, error) {
+func GetCurrent(city string) (*WeatherInfo, error) {
 	var weather *apixu.Weather
 
 	coordinates, err := geocoder.GetCoordinates(city)
 	if err != nil {
-		return &apixu.Weather{}, err
+		return &WeatherInfo{}, err
 	}
 
 	if existsInRedis(coordinates) {
@@ -44,17 +49,20 @@ func GetCurrent(city string) (*apixu.Weather, error) {
 	} else {
 		weather, err = apixu.GetCurrentWeather(coordinates)
 		if err != nil {
-			return &apixu.Weather{}, err
+			return &WeatherInfo{}, err
 		}
 
 		err = setWeatherRow(coordinates, weather)
 	}
 
 	if err != nil {
-		return &apixu.Weather{}, err
+		return &WeatherInfo{}, err
 	}
 
-	return weather, err
+	return &WeatherInfo{
+		City:    coordinates.City,
+		Weather: *weather,
+	}, err
 }
 
 func existsInRedis(coordinates *geocoder.Coordinates) bool {
